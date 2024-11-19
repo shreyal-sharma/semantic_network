@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "solar", "label": "solar", "shape": "dot"}, {"color": "#97c2fc", "id": "panel", "label": "panel", "shape": "dot"}, {"color": "#97c2fc", "id": "light", "label": "light", "shape": "dot"}, {"color": "#97c2fc", "id": "bulb", "label": "bulb", "shape": "dot"}, {"color": "#97c2fc", "id": "expensive", "label": "expensive", "shape": "dot"}, {"color": "#97c2fc", "id": "dark", "label": "dark", "shape": "dot"}, {"color": "#97c2fc", "id": "curtain", "label": "curtain", "shape": "dot"}, {"color": "#97c2fc", "id": "home", "label": "home", "shape": "dot"}, {"color": "#97c2fc", "id": "energy", "label": "energy", "shape": "dot"}, {"color": "#97c2fc", "id": "power", "label": "power", "shape": "dot"}, {"color": "#97c2fc", "id": "night", "label": "night", "shape": "dot"}, {"color": "#97c2fc", "id": "year", "label": "year", "shape": "dot"}, {"color": "#97c2fc", "id": "house", "label": "house", "shape": "dot"}, {"color": "#97c2fc", "id": "money", "label": "money", "shape": "dot"}, {"color": "#97c2fc", "id": "environment", "label": "environment", "shape": "dot"}, {"color": "#97c2fc", "id": "budget", "label": "budget", "shape": "dot"}, {"color": "#97c2fc", "id": "arm", "label": "arm", "shape": "dot"}, {"color": "#97c2fc", "id": "leg", "label": "leg", "shape": "dot"}, {"color": "#97c2fc", "id": "electricity", "label": "electricity", "shape": "dot"}, {"color": "#97c2fc", "id": "school", "label": "school", "shape": "dot"}, {"color": "#97c2fc", "id": "business", "label": "business", "shape": "dot"}, {"color": "#97c2fc", "id": "space", "label": "space", "shape": "dot"}, {"color": "#97c2fc", "id": "butt", "label": "butt", "shape": "dot"}, {"color": "#97c2fc", "id": "ton", "label": "ton", "shape": "dot"}, {"color": "#97c2fc", "id": "employee", "label": "employee", "shape": "dot"}, {"color": "#97c2fc", "id": "cost", "label": "cost", "shape": "dot"}, {"color": "#97c2fc", "id": "wi", "label": "wi", "shape": "dot"}, {"color": "#97c2fc", "id": "fi", "label": "fi", "shape": "dot"}, {"color": "#97c2fc", "id": "car", "label": "car", "shape": "dot"}, {"color": "#97c2fc", "id": "train", "label": "train", "shape": "dot"}, {"color": "#97c2fc", "id": "work", "label": "work", "shape": "dot"}, {"color": "#97c2fc", "id": "discussion", "label": "discussion", "shape": "dot"}, {"color": "#97c2fc", "id": "vote", "label": "vote", "shape": "dot"}, {"color": "#97c2fc", "id": "sustainability", "label": "sustainability", "shape": "dot"}, {"color": "#97c2fc", "id": "program", "label": "program", "shape": "dot"}, {"color": "#97c2fc", "id": "tax", "label": "tax", "shape": "dot"}, {"color": "#97c2fc", "id": "incentive", "label": "incentive", "shape": "dot"}, {"color": "#97c2fc", "id": "financing", "label": "financing", "shape": "dot"}, {"color": "#97c2fc", "id": "benefit", "label": "benefit", "shape": "dot"}, {"color": "#97c2fc", "id": "rare", "label": "rare", "shape": "dot"}, {"color": "#97c2fc", "id": "plant", "label": "plant", "shape": "dot"}, {"color": "#97c2fc", "id": "equipment", "label": "equipment", "shape": "dot"}, {"color": "#97c2fc", "id": "efficient", "label": "efficient", "shape": "dot"}, {"color": "#97c2fc", "id": "seasonal", "label": "seasonal", "shape": "dot"}, {"color": "#97c2fc", "id": "backup", "label": "backup", "shape": "dot"}, {"color": "#97c2fc", "id": "option", "label": "option", "shape": "dot"}, {"color": "#97c2fc", "id": "condition", "label": "condition", "shape": "dot"}, {"color": "#97c2fc", "id": "climate", "label": "climate", "shape": "dot"}, {"color": "#97c2fc", "id": "major", "label": "major", "shape": "dot"}, {"color": "#97c2fc", "id": "factor", "label": "factor", "shape": "dot"}, {"color": "#97c2fc", "id": "place", "label": "place", "shape": "dot"}, {"color": "#97c2fc", "id": "electric", "label": "electric", "shape": "dot"}, {"color": "#97c2fc", "id": "battery", "label": "battery", "shape": "dot"}, {"color": "#97c2fc", "id": "neighborhood", "label": "neighborhood", "shape": "dot"}, {"color": "#97c2fc", "id": "uniform", "label": "uniform", "shape": "dot"}, {"color": "#97c2fc", "id": "attractive", "label": "attractive", "shape": "dot"}, {"color": "#97c2fc", "id": "nice", "label": "nice", "shape": "dot"}, {"color": "#97c2fc", "id": "neat", "label": "neat", "shape": "dot"}, {"color": "#97c2fc", "id": "concept", "label": "concept", "shape": "dot"}, {"color": "#97c2fc", "id": "contractor", "label": "contractor", "shape": "dot"}, {"color": "#97c2fc", "id": "max", "label": "max", "shape": "dot"}, {"color": "#97c2fc", "id": "age", "label": "age", "shape": "dot"}, {"color": "#97c2fc", "id": "point", "label": "point", "shape": "dot"}, {"color": "#97c2fc", "id": "initiative", "label": "initiative", "shape": "dot"}, {"color": "#97c2fc", "id": "homeowner", "label": "homeowner", "shape": "dot"}, {"color": "#97c2fc", "id": "government", "label": "government", "shape": "dot"}, {"color": "#97c2fc", "id": "tree", "label": "tree", "shape": "dot"}, {"color": "#97c2fc", "id": "grant", "label": "grant", "shape": "dot"}, {"color": "#97c2fc", "id": "infrastructure", "label": "infrastructure", "shape": "dot"}, {"color": "#97c2fc", "id": "company", "label": "company", "shape": "dot"}, {"color": "#97c2fc", "id": "credit", "label": "credit", "shape": "dot"}, {"color": "#97c2fc", "id": "governor", "label": "governor", "shape": "dot"}, {"color": "#97c2fc", "id": "mayor", "label": "mayor", "shape": "dot"}, {"color": "#97c2fc", "id": "plan", "label": "plan", "shape": "dot"}, {"color": "#97c2fc", "id": "meeting", "label": "meeting", "shape": "dot"}, {"color": "#97c2fc", "id": "zoning", "label": "zoning", "shape": "dot"}, {"color": "#97c2fc", "id": "town", "label": "town", "shape": "dot"}, {"color": "#97c2fc", "id": "construction", "label": "construction", "shape": "dot"}, {"color": "#97c2fc", "id": "member", "label": "member", "shape": "dot"}, {"color": "#97c2fc", "id": "community", "label": "community", "shape": "dot"}, {"color": "#97c2fc", "id": "feasible", "label": "feasible", "shape": "dot"}, {"color": "#97c2fc", "id": "important", "label": "important", "shape": "dot"}, {"color": "#97c2fc", "id": "world", "label": "world", "shape": "dot"}, {"color": "#97c2fc", "id": "challenge", "label": "challenge", "shape": "dot"}, {"color": "#97c2fc", "id": "precautionary", "label": "precautionary", "shape": "dot"}, {"color": "#97c2fc", "id": "measure", "label": "measure", "shape": "dot"}, {"color": "#97c2fc", "id": "natural", "label": "natural", "shape": "dot"}, {"color": "#97c2fc", "id": "source", "label": "source", "shape": "dot"}, {"color": "#97c2fc", "id": "limit", "label": "limit", "shape": "dot"}, {"color": "#97c2fc", "id": "weather", "label": "weather", "shape": "dot"}, {"color": "#97c2fc", "id": "apartment", "label": "apartment", "shape": "dot"}, {"color": "#97c2fc", "id": "installation", "label": "installation", "shape": "dot"}, {"color": "#97c2fc", "id": "mandatory", "label": "mandatory", "shape": "dot"}, {"color": "#97c2fc", "id": "price", "label": "price", "shape": "dot"}, {"color": "#97c2fc", "id": "viable", "label": "viable", "shape": "dot"}, {"color": "#97c2fc", "id": "loan", "label": "loan", "shape": "dot"}, {"color": "#97c2fc", "id": "purchase", "label": "purchase", "shape": "dot"}, {"color": "#97c2fc", "id": "agreement", "label": "agreement", "shape": "dot"}, {"color": "#97c2fc", "id": "rebate", "label": "rebate", "shape": "dot"}, {"color": "#97c2fc", "id": "roof", "label": "roof", "shape": "dot"}, {"color": "#97c2fc", "id": "day", "label": "day", "shape": "dot"}, {"color": "#97c2fc", "id": "beach", "label": "beach", "shape": "dot"}, {"color": "#97c2fc", "id": "sun", "label": "sun", "shape": "dot"}, {"color": "#97c2fc", "id": "winner", "label": "winner", "shape": "dot"}, {"color": "#97c2fc", "id": "install", "label": "install", "shape": "dot"}, {"color": "#97c2fc", "id": "trust", "label": "trust", "shape": "dot"}, {"color": "#97c2fc", "id": "person", "label": "person", "shape": "dot"}, {"color": "#97c2fc", "id": "technology", "label": "technology", "shape": "dot"}, {"color": "#97c2fc", "id": "monopoly", "label": "monopoly", "shape": "dot"}, {"color": "#97c2fc", "id": "lucrative", "label": "lucrative", "shape": "dot"}, {"color": "#97c2fc", "id": "morning", "label": "morning", "shape": "dot"}, {"color": "#97c2fc", "id": "afternoon", "label": "afternoon", "shape": "dot"}, {"color": "#97c2fc", "id": "soy", "label": "soy", "shape": "dot"}, {"color": "#97c2fc", "id": "warm", "label": "warm", "shape": "dot"}, {"color": "#97c2fc", "id": "area", "label": "area", "shape": "dot"}, {"color": "#97c2fc", "id": "cloudy", "label": "cloudy", "shape": "dot"}, {"color": "#97c2fc", "id": "rainy", "label": "rainy", "shape": "dot"}, {"color": "#97c2fc", "id": "affordable", "label": "affordable", "shape": "dot"}, {"color": "#97c2fc", "id": "state", "label": "state", "shape": "dot"}, {"color": "#97c2fc", "id": "family", "label": "family", "shape": "dot"}, {"color": "#97c2fc", "id": "advantage", "label": "advantage", "shape": "dot"}, {"color": "#97c2fc", "id": "affordability", "label": "affordability", "shape": "dot"}, {"color": "#97c2fc", "id": "high", "label": "high", "shape": "dot"}, {"color": "#97c2fc", "id": "noise", "label": "noise", "shape": "dot"}, {"color": "#97c2fc", "id": "admin", "label": "admin", "shape": "dot"}, {"color": "#97c2fc", "id": "programme", "label": "programme", "shape": "dot"}, {"color": "#97c2fc", "id": "building", "label": "building", "shape": "dot"}, {"color": "#97c2fc", "id": "door", "label": "door", "shape": "dot"}, {"color": "#97c2fc", "id": "summer", "label": "summer", "shape": "dot"}, {"color": "#97c2fc", "id": "window", "label": "window", "shape": "dot"}, {"color": "#97c2fc", "id": "pane", "label": "pane", "shape": "dot"}, {"color": "#97c2fc", "id": "assistance", "label": "assistance", "shape": "dot"}, {"color": "#97c2fc", "id": "effective", "label": "effective", "shape": "dot"}, {"color": "#97c2fc", "id": "cooler", "label": "cooler", "shape": "dot"}, {"color": "#97c2fc", "id": "noticeable", "label": "noticeable", "shape": "dot"}, {"color": "#97c2fc", "id": "difference", "label": "difference", "shape": "dot"}, {"color": "#97c2fc", "id": "dimmer", "label": "dimmer", "shape": "dot"}, {"color": "#97c2fc", "id": "strong", "label": "strong", "shape": "dot"}, {"color": "#97c2fc", "id": "solution", "label": "solution", "shape": "dot"}, {"color": "#97c2fc", "id": "ground", "label": "ground", "shape": "dot"}, {"color": "#97c2fc", "id": "control", "label": "control", "shape": "dot"}, {"color": "#97c2fc", "id": "air", "label": "air", "shape": "dot"}, {"color": "#97c2fc", "id": "beneficial", "label": "beneficial", "shape": "dot"}, {"color": "#97c2fc", "id": "access", "label": "access", "shape": "dot"}, {"color": "#97c2fc", "id": "thermostat", "label": "thermostat", "shape": "dot"}, {"color": "#97c2fc", "id": "renewable", "label": "renewable", "shape": "dot"}, {"color": "#97c2fc", "id": "certificate", "label": "certificate", "shape": "dot"}, {"color": "#97c2fc", "id": "job", "label": "job", "shape": "dot"}, {"color": "#97c2fc", "id": "economic", "label": "economic", "shape": "dot"}, {"color": "#97c2fc", "id": "growth", "label": "growth", "shape": "dot"}, {"color": "#97c2fc", "id": "adoption", "label": "adoption", "shape": "dot"}, {"color": "#97c2fc", "id": "greenhouse", "label": "greenhouse", "shape": "dot"}, {"color": "#97c2fc", "id": "gas", "label": "gas", "shape": "dot"}, {"color": "#97c2fc", "id": "emission", "label": "emission", "shape": "dot"}, {"color": "#97c2fc", "id": "future", "label": "future", "shape": "dot"}, {"color": "#97c2fc", "id": "inflation", "label": "inflation", "shape": "dot"}, {"color": "#97c2fc", "id": "effect", "label": "effect", "shape": "dot"}, {"color": "#97c2fc", "id": "extreme", "label": "extreme", "shape": "dot"}, {"color": "#97c2fc", "id": "case", "label": "case", "shape": "dot"}, {"color": "#97c2fc", "id": "sufficient", "label": "sufficient", "shape": "dot"}, {"color": "#97c2fc", "id": "connection", "label": "connection", "shape": "dot"}, {"color": "#97c2fc", "id": "participant", "label": "participant", "shape": "dot"}, {"color": "#97c2fc", "id": "metal", "label": "metal", "shape": "dot"}, {"color": "#97c2fc", "id": "trash", "label": "trash", "shape": "dot"}, {"color": "#97c2fc", "id": "real", "label": "real", "shape": "dot"}, {"color": "#97c2fc", "id": "credible", "label": "credible", "shape": "dot"}, {"color": "#97c2fc", "id": "level", "label": "level", "shape": "dot"}, {"color": "#97c2fc", "id": "alternative", "label": "alternative", "shape": "dot"}, {"color": "#97c2fc", "id": "information", "label": "information", "shape": "dot"}, {"color": "#97c2fc", "id": "method", "label": "method", "shape": "dot"}, {"color": "#97c2fc", "id": "attainable", "label": "attainable", "shape": "dot"}, {"color": "#97c2fc", "id": "sky", "label": "sky", "shape": "dot"}, {"color": "#97c2fc", "id": "cheap", "label": "cheap", "shape": "dot"}, {"color": "#97c2fc", "id": "payment", "label": "payment", "shape": "dot"}, {"color": "#97c2fc", "id": "distance", "label": "distance", "shape": "dot"}, {"color": "#97c2fc", "id": "moderator", "label": "moderator", "shape": "dot"}, {"color": "#97c2fc", "id": "saving", "label": "saving", "shape": "dot"}, {"color": "#97c2fc", "id": "product", "label": "product", "shape": "dot"}, {"color": "#97c2fc", "id": "availability", "label": "availability", "shape": "dot"}, {"color": "#97c2fc", "id": "key", "label": "key", "shape": "dot"}, {"color": "#97c2fc", "id": "role", "label": "role", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "solar", "to": "panel", "weight": 23}, {"from": "solar", "to": "light", "weight": 8}, {"from": "solar", "to": "bulb", "weight": 2}, {"from": "solar", "to": "power", "weight": 5}, {"from": "solar", "to": "night", "weight": 2}, {"from": "solar", "to": "energy", "weight": 30}, {"from": "solar", "to": "program", "weight": 2}, {"from": "solar", "to": "efficient", "weight": 2}, {"from": "solar", "to": "school", "weight": 1}, {"from": "solar", "to": "solar", "weight": 2}, {"from": "solar", "to": "concept", "weight": 3}, {"from": "solar", "to": "roof", "weight": 1}, {"from": "solar", "to": "person", "weight": 1}, {"from": "solar", "to": "company", "weight": 1}, {"from": "solar", "to": "house", "weight": 4}, {"from": "solar", "to": "programme", "weight": 3}, {"from": "solar", "to": "building", "weight": 4}, {"from": "solar", "to": "effective", "weight": 2}, {"from": "solar", "to": "beneficial", "weight": 1}, {"from": "solar", "to": "renewable", "weight": 2}, {"from": "solar", "to": "certificate", "weight": 1}, {"from": "solar", "to": "job", "weight": 1}, {"from": "solar", "to": "adoption", "weight": 1}, {"from": "solar", "to": "greenhouse", "weight": 1}, {"from": "solar", "to": "gas", "weight": 1}, {"from": "solar", "to": "emission", "weight": 1}, {"from": "solar", "to": "apartment", "weight": 1}, {"from": "solar", "to": "community", "weight": 1}, {"from": "solar", "to": "area", "weight": 1}, {"from": "solar", "to": "cheap", "weight": 1}, {"from": "solar", "to": "payment", "weight": 1}, {"from": "solar", "to": "availability", "weight": 1}, {"from": "panel", "to": "light", "weight": 4}, {"from": "panel", "to": "power", "weight": 2}, {"from": "panel", "to": "night", "weight": 2}, {"from": "panel", "to": "budget", "weight": 2}, {"from": "panel", "to": "incentive", "weight": 4}, {"from": "panel", "to": "energy", "weight": 1}, {"from": "panel", "to": "concept", "weight": 1}, {"from": "panel", "to": "year", "weight": 1}, {"from": "panel", "to": "credit", "weight": 1}, {"from": "panel", "to": "roof", "weight": 1}, {"from": "panel", "to": "company", "weight": 1}, {"from": "panel", "to": "house", "weight": 3}, {"from": "light", "to": "bulb", "weight": 8}, {"from": "light", "to": "expensive", "weight": 2}, {"from": "light", "to": "light", "weight": 6}, {"from": "light", "to": "power", "weight": 4}, {"from": "light", "to": "night", "weight": 4}, {"from": "light", "to": "arm", "weight": 4}, {"from": "light", "to": "leg", "weight": 4}, {"from": "light", "to": "rare", "weight": 2}, {"from": "light", "to": "plant", "weight": 2}, {"from": "light", "to": "equipment", "weight": 2}, {"from": "light", "to": "dimmer", "weight": 1}, {"from": "light", "to": "strong", "weight": 1}, {"from": "bulb", "to": "expensive", "weight": 2}, {"from": "expensive", "to": "technology", "weight": 1}, {"from": "expensive", "to": "monopoly", "weight": 1}, {"from": "dark", "to": "curtain", "weight": 2}, {"from": "dark", "to": "home", "weight": 2}, {"from": "curtain", "to": "home", "weight": 2}, {"from": "home", "to": "employee", "weight": 2}, {"from": "home", "to": "cost", "weight": 2}, {"from": "home", "to": "place", "weight": 1}, {"from": "home", "to": "affordability", "weight": 1}, {"from": "home", "to": "energy", "weight": 1}, {"from": "home", "to": "tree", "weight": 1}, {"from": "energy", "to": "program", "weight": 2}, {"from": "energy", "to": "efficient", "weight": 2}, {"from": "energy", "to": "school", "weight": 1}, {"from": "energy", "to": "infrastructure", "weight": 2}, {"from": "energy", "to": "energy", "weight": 1}, {"from": "energy", "to": "plant", "weight": 2}, {"from": "energy", "to": "equipment", "weight": 1}, {"from": "energy", "to": "loan", "weight": 1}, {"from": "energy", "to": "affordable", "weight": 2}, {"from": "energy", "to": "affordability", "weight": 1}, {"from": "energy", "to": "incentive", "weight": 1}, {"from": "energy", "to": "high", "weight": 2}, {"from": "energy", "to": "programme", "weight": 2}, {"from": "energy", "to": "building", "weight": 1}, {"from": "energy", "to": "assistance", "weight": 2}, {"from": "energy", "to": "effective", "weight": 2}, {"from": "energy", "to": "cloudy", "weight": 1}, {"from": "energy", "to": "day", "weight": 1}, {"from": "energy", "to": "window", "weight": 1}, {"from": "energy", "to": "renewable", "weight": 2}, {"from": "energy", "to": "certificate", "weight": 1}, {"from": "energy", "to": "sky", "weight": 1}, {"from": "energy", "to": "business", "weight": 1}, {"from": "energy", "to": "house", "weight": 1}, {"from": "power", "to": "night", "weight": 2}, {"from": "power", "to": "loan", "weight": 1}, {"from": "power", "to": "purchase", "weight": 1}, {"from": "power", "to": "agreement", "weight": 1}, {"from": "power", "to": "saving", "weight": 1}, {"from": "house", "to": "money", "weight": 2}, {"from": "house", "to": "noticeable", "weight": 1}, {"from": "house", "to": "difference", "weight": 1}, {"from": "house", "to": "day", "weight": 1}, {"from": "house", "to": "house", "weight": 1}, {"from": "money", "to": "business", "weight": 2}, {"from": "money", "to": "space", "weight": 2}, {"from": "money", "to": "butt", "weight": 2}, {"from": "money", "to": "ton", "weight": 2}, {"from": "money", "to": "car", "weight": 2}, {"from": "money", "to": "tree", "weight": 1}, {"from": "money", "to": "grant", "weight": 1}, {"from": "money", "to": "extreme", "weight": 1}, {"from": "money", "to": "company", "weight": 1}, {"from": "arm", "to": "leg", "weight": 2}, {"from": "electricity", "to": "source", "weight": 1}, {"from": "business", "to": "space", "weight": 2}, {"from": "business", "to": "butt", "weight": 2}, {"from": "business", "to": "ton", "weight": 2}, {"from": "business", "to": "sky", "weight": 1}, {"from": "space", "to": "butt", "weight": 2}, {"from": "space", "to": "ton", "weight": 2}, {"from": "space", "to": "air", "weight": 1}, {"from": "space", "to": "condition", "weight": 1}, {"from": "butt", "to": "ton", "weight": 2}, {"from": "ton", "to": "point", "weight": 1}, {"from": "employee", "to": "cost", "weight": 2}, {"from": "cost", "to": "sufficient", "weight": 1}, {"from": "cost", "to": "effective", "weight": 2}, {"from": "cost", "to": "method", "weight": 1}, {"from": "wi", "to": "fi", "weight": 2}, {"from": "car", "to": "electric", "weight": 1}, {"from": "car", "to": "price", "weight": 1}, {"from": "train", "to": "work", "weight": 2}, {"from": "discussion", "to": "vote", "weight": 2}, {"from": "discussion", "to": "admin", "weight": 2}, {"from": "sustainability", "to": "program", "weight": 2}, {"from": "program", "to": "financing", "weight": 2}, {"from": "tax", "to": "incentive", "weight": 4}, {"from": "tax", "to": "benefit", "weight": 2}, {"from": "tax", "to": "rebate", "weight": 1}, {"from": "incentive", "to": "incentive", "weight": 2}, {"from": "incentive", "to": "contractor", "weight": 1}, {"from": "incentive", "to": "programme", "weight": 1}, {"from": "rare", "to": "plant", "weight": 2}, {"from": "rare", "to": "equipment", "weight": 2}, {"from": "plant", "to": "equipment", "weight": 2}, {"from": "plant", "to": "infrastructure", "weight": 1}, {"from": "equipment", "to": "loan", "weight": 1}, {"from": "backup", "to": "option", "weight": 1}, {"from": "option", "to": "winner", "weight": 1}, {"from": "option", "to": "access", "weight": 1}, {"from": "option", "to": "real", "weight": 2}, {"from": "option", "to": "credible", "weight": 2}, {"from": "option", "to": "alternative", "weight": 1}, {"from": "condition", "to": "climate", "weight": 1}, {"from": "condition", "to": "air", "weight": 1}, {"from": "climate", "to": "challenge", "weight": 1}, {"from": "major", "to": "factor", "weight": 1}, {"from": "major", "to": "ground", "weight": 1}, {"from": "major", "to": "control", "weight": 1}, {"from": "electric", "to": "battery", "weight": 1}, {"from": "electric", "to": "company", "weight": 2}, {"from": "electric", "to": "price", "weight": 1}, {"from": "electric", "to": "credit", "weight": 1}, {"from": "uniform", "to": "attractive", "weight": 1}, {"from": "nice", "to": "neat", "weight": 1}, {"from": "nice", "to": "beach", "weight": 1}, {"from": "concept", "to": "feasible", "weight": 1}, {"from": "contractor", "to": "price", "weight": 1}, {"from": "max", "to": "age", "weight": 1}, {"from": "max", "to": "point", "weight": 1}, {"from": "age", "to": "point", "weight": 1}, {"from": "age", "to": "day", "weight": 1}, {"from": "initiative", "to": "homeowner", "weight": 1}, {"from": "initiative", "to": "government", "weight": 1}, {"from": "homeowner", "to": "government", "weight": 1}, {"from": "government", "to": "state", "weight": 1}, {"from": "government", "to": "level", "weight": 1}, {"from": "tree", "to": "grant", "weight": 1}, {"from": "tree", "to": "sun", "weight": 1}, {"from": "governor", "to": "mayor", "weight": 1}, {"from": "plan", "to": "meeting", "weight": 1}, {"from": "zoning", "to": "town", "weight": 1}, {"from": "member", "to": "community", "weight": 1}, {"from": "precautionary", "to": "measure", "weight": 1}, {"from": "natural", "to": "source", "weight": 1}, {"from": "natural", "to": "limit", "weight": 1}, {"from": "source", "to": "limit", "weight": 1}, {"from": "apartment", "to": "installation", "weight": 1}, {"from": "apartment", "to": "summer", "weight": 1}, {"from": "apartment", "to": "cooler", "weight": 1}, {"from": "apartment", "to": "building", "weight": 1}, {"from": "price", "to": "install", "weight": 1}, {"from": "loan", "to": "purchase", "weight": 1}, {"from": "loan", "to": "agreement", "weight": 1}, {"from": "purchase", "to": "agreement", "weight": 1}, {"from": "day", "to": "sun", "weight": 1}, {"from": "day", "to": "noticeable", "weight": 1}, {"from": "day", "to": "difference", "weight": 1}, {"from": "day", "to": "cloudy", "weight": 1}, {"from": "person", "to": "participant", "weight": 1}, {"from": "soy", "to": "warm", "weight": 1}, {"from": "cloudy", "to": "rainy", "weight": 1}, {"from": "affordable", "to": "affordable", "weight": 1}, {"from": "state", "to": "family", "weight": 1}, {"from": "state", "to": "advantage", "weight": 1}, {"from": "state", "to": "economic", "weight": 1}, {"from": "state", "to": "growth", "weight": 1}, {"from": "state", "to": "level", "weight": 1}, {"from": "family", "to": "advantage", "weight": 2}, {"from": "high", "to": "window", "weight": 1}, {"from": "high", "to": "beneficial", "weight": 1}, {"from": "admin", "to": "admin", "weight": 1}, {"from": "programme", "to": "effective", "weight": 1}, {"from": "programme", "to": "job", "weight": 1}, {"from": "building", "to": "building", "weight": 1}, {"from": "building", "to": "beneficial", "weight": 1}, {"from": "door", "to": "window", "weight": 1}, {"from": "window", "to": "pane", "weight": 1}, {"from": "window", "to": "thermostat", "weight": 1}, {"from": "effective", "to": "solution", "weight": 1}, {"from": "effective", "to": "method", "weight": 1}, {"from": "noticeable", "to": "difference", "weight": 1}, {"from": "ground", "to": "control", "weight": 1}, {"from": "access", "to": "real", "weight": 1}, {"from": "access", "to": "credible", "weight": 1}, {"from": "renewable", "to": "certificate", "weight": 1}, {"from": "economic", "to": "growth", "weight": 1}, {"from": "adoption", "to": "greenhouse", "weight": 1}, {"from": "adoption", "to": "gas", "weight": 1}, {"from": "adoption", "to": "emission", "weight": 1}, {"from": "greenhouse", "to": "gas", "weight": 1}, {"from": "greenhouse", "to": "emission", "weight": 1}, {"from": "gas", "to": "emission", "weight": 1}, {"from": "metal", "to": "trash", "weight": 1}, {"from": "real", "to": "credible", "weight": 2}, {"from": "real", "to": "product", "weight": 2}, {"from": "information", "to": "attainable", "weight": 1}, {"from": "cheap", "to": "payment", "weight": 3}, {"from": "cheap", "to": "cheap", "weight": 1}, {"from": "product", "to": "product", "weight": 1}, {"from": "key", "to": "role", "weight": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
